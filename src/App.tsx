@@ -417,7 +417,7 @@ function LessonAudioReader({ lesson, apiKey }: { lesson: Lesson; apiKey: string 
   const totalWords = globalWordCounter;
   const progress = duration > 0 ? currentTime / duration : 0;
   // Apply a 15% speed dampening (via power curve) to align with natural sentence pauses
-  const adjustedProgress = Math.pow(progress, 1.19);
+  const adjustedProgress = Math.pow(progress, 1.225);
   const activeIndex = isPlaying || currentTime > 0 
     ? Math.min(Math.floor(adjustedProgress * totalWords), totalWords - 1) 
     : -1;
