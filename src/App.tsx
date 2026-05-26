@@ -729,7 +729,7 @@ function LessonsView({
     }));
   };
 
-  const activeGPTImagelarge = `https://image.pollinations.ai/prompt/${encodeURIComponent(
+  const activeGPTImage = `https://image.pollinations.ai/prompt/${encodeURIComponent(
     currentLesson.imagePrompt
   )}?model=gptimage-large&width=800&height=480&nologo=true&seed=42`;
 
