@@ -82,7 +82,7 @@ export default function App() {
     setCompletedLessons({});
 
     try {
-      const prompt = `You are an expert, supportive AI Socratic Tutor named Sophia. Your goal is to design a high-quality, structured learning course about the topic: "${topic}".
+      const prompt = `You are an expert, supportive AI Tutor named Sophia. Your goal is to design a high-quality, structured learning course about the topic: "${topic}".
 Break the topic down into 3 distinct, bite-sized, sequential lessons (segments) that make learning easy and not overwhelming.
 Each lesson must have:
 - A clear, engaging title.
@@ -183,7 +183,7 @@ Respond ONLY in valid JSON matching this schema:
            <div className="mb-12 text-center max-w-2xl mx-auto">
              <h2 className="text-4xl font-serif tracking-tight mb-4 italic text-white">Master any topic, step-by-step.</h2>
              <p className="text-sm text-white/50 leading-relaxed">
-               Enter what you want to learn. We will segment the course into bite-sized lessons, read them word-by-word with audio, explain them with visuals, and guide you Socratic-style with Sophia, your virtual guide.
+               Enter what you want to learn. We will segment the course into bite-sized lessons, read them word-by-word with audio, explain them with visuals, and guide you step-by-step with Sophia, your virtual guide.
              </p>
            </div>
         )}
@@ -336,17 +336,9 @@ function LessonAudioReader({ lesson, apiKey }: { lesson: Lesson; apiKey: string 
     setAudioError("");
 
     try {
-      const res = await fetch("https://gen.pollinations.ai/v1/audio/speech", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${apiKey}`
-        },
-        body: JSON.stringify({
-          model: "qwen-tts",
-          input: lesson.content,
-          voice: "alloy"
-        })
+      const urlEncodedText = encodeURIComponent(lesson.content);
+      const res = await fetch(`https://gen.pollinations.ai/audio/${urlEncodedText}?voice=alloy&key=${apiKey}`, {
+        method: "GET"
       });
 
       if (!res.ok) {
@@ -544,18 +536,18 @@ function formatTime(secs: number) {
   return `${m}:${s < 10 ? "0" : ""}${s}`;
 }
 
-function SocraticTutorChat({ lesson, apiKey }: { lesson: Lesson; apiKey: string }) {
+function SophiaTutorChat({ lesson, apiKey }: { lesson: Lesson; apiKey: string }) {
   const [messages, setMessages] = useState<{ role: "user" | "assistant" | "system"; content: string }[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Reset Socratic chat state on lesson change
+  // Reset Sophia chat state on lesson change
   useEffect(() => {
     setMessages([
       {
         role: "assistant",
-        content: `Hello! I am Sophia, your Socratic Guide. Let's discuss "${lesson.title}". What questions do you have about the concepts here, or would you like me to test your understanding?`
+        content: `Hello! I am Sophia, your AI Guide. Let's discuss "${lesson.title}". What questions do you have about the concepts here, or would you like me to test your understanding?`
       }
     ]);
     setError("");
@@ -577,9 +569,9 @@ function SocraticTutorChat({ lesson, apiKey }: { lesson: Lesson; apiKey: string 
     try {
       const systemMessage = {
         role: "system" as const,
-        content: `You are Sophia, an upbeat, encouraging, and empathetic Socratic Guide helper for the lesson: "${lesson.title}".
+        content: `You are Sophia, an upbeat, encouraging, and empathetic AI Guide helper for the lesson: "${lesson.title}".
 The content of the lesson is: "${lesson.content}".
-Your role is to help the student learn and master the concept by checking for understanding and providing guidance using Socratic questioning.
+Your role is to help the student learn and master the concept by checking for understanding and providing guidance.
 Do not provide immediate answers or solutions to problems. Instead, help the student generate their own answers by asking leading questions, providing small hints, or offering simple everyday analogies.
 Ask only one question at a time. If the student is stuck, guide them. Praise correct thinking and show excitement.
 Keep responses concise (under 100 words).`
@@ -729,9 +721,9 @@ function LessonsView({
     }));
   };
 
-  const activeGPTImage = `https://image.pollinations.ai/prompt/${encodeURIComponent(
+  const activeGPTImage = `https://gen.pollinations.ai/image/${encodeURIComponent(
     currentLesson.imagePrompt
-  )}?model=gptimage-large&width=800&height=480&nologo=true&seed=42`;
+  )}?model=gptimage-large&width=800&height=480&nologo=true&seed=42&key=${apiKey}`;
 
   const completedCount = Object.values(completedLessons).filter(Boolean).length;
   const progressPercent = Math.round((completedCount / lessons.length) * 100);
@@ -880,7 +872,7 @@ function LessonsView({
             <LessonAudioReader lesson={currentLesson} apiKey={apiKey} />
           </div>
 
-          <SocraticTutorChat lesson={currentLesson} apiKey={apiKey} />
+          <SophiaTutorChat lesson={currentLesson} apiKey={apiKey} />
         </div>
       </div>
     </motion.div>
