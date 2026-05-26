@@ -89,7 +89,7 @@ Each lesson must have:
 - A clear, engaging title.
 - A concise summary (1 sentence).
 - Educational content (2-3 short paragraphs, around 100-150 words total).
-- A detailed imagePrompt describing a scientific, technical, or educational diagram or visual representing the lesson's key concept, suitable for the Alibaba S3-DiT model (Z-Image). The style should be clean, high-quality, educational diagram or scientific visualization, 3D render or vector art.
+- A detailed imagePrompt describing a scientific, technical, or educational diagram or visual representing the lesson's key concept, suitable for the GPT Image model. The style should be clean, high-quality, educational diagram or scientific visualization, 3D render or vector art.
 - A clean audioScript containing the text of the lesson, formatted as a simple speech script without markdown characters (like hashes, bold asterisks, list bullets, etc.) so that it can be synthesized seamlessly via text-to-speech.
 
 Also generate 3 flashcards and 3 quiz questions for the overall topic.
@@ -730,9 +730,9 @@ function LessonsView({
     }));
   };
 
-  const activeZImage = `https://image.pollinations.ai/prompt/${encodeURIComponent(
+  const activeGPTImage = `https://image.pollinations.ai/prompt/${encodeURIComponent(
     currentLesson.imagePrompt
-  )}?model=zimage&width=800&height=480&nologo=true&seed=42`;
+  )}?model=gptimage&width=800&height=480&nologo=true&seed=42`;
 
   const completedCount = Object.values(completedLessons).filter(Boolean).length;
   const progressPercent = Math.round((completedCount / lessons.length) * 100);
@@ -837,7 +837,7 @@ function LessonsView({
           <div className="space-y-4">
             <div className="relative aspect-video rounded-xl overflow-hidden border border-white/5 bg-[#0F0F11] group shadow-2xl">
               <img
-                src={activeZImage}
+                src={activeGPTImage}
                 alt={currentLesson.title}
                 className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-700"
                 loading="lazy"
@@ -847,7 +847,7 @@ function LessonsView({
               <div className="absolute top-4 left-4 bg-[#0A0A0B]/80 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/5 flex items-center gap-2">
                 <div className="w-1.5 h-1.5 rounded-full bg-[#C1A57B]"></div>
                 <span className="text-[10px] font-semibold text-white uppercase tracking-wider">
-                  Z-Image Explanatory Visual
+                  GPT Image Explanatory Visual
                 </span>
               </div>
               
