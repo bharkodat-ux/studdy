@@ -16,7 +16,6 @@ interface Lesson {
   summary: string;
   content: string;
   imagePrompt: string;
-  audioScript: string;
 }
 
 interface CourseData {
@@ -83,14 +82,13 @@ export default function App() {
     setCompletedLessons({});
 
     try {
-      const prompt = `You are an expert, supportive AI Socratic Tutor. Your goal is to design a high-quality, structured learning course about the topic: "${topic}".
+      const prompt = `You are an expert, supportive AI Socratic Tutor named Sophia. Your goal is to design a high-quality, structured learning course about the topic: "${topic}".
 Break the topic down into 3 distinct, bite-sized, sequential lessons (segments) that make learning easy and not overwhelming.
 Each lesson must have:
 - A clear, engaging title.
 - A concise summary (1 sentence).
-- Educational content (2-3 short paragraphs, around 100-150 words total).
+- Educational content (2-3 short paragraphs, around 100-150 words total). Crucially, the content must be clean plain text without any markdown characters (no hashes, bold asterisks, list bullets, etc.) so that it can be read aloud and synchronized word-by-word with speech synthesis.
 - A detailed imagePrompt describing a scientific, technical, or educational diagram or visual representing the lesson's key concept, suitable for the GPT Image model. The style should be clean, high-quality, educational diagram or scientific visualization, 3D render or vector art.
-- A clean audioScript containing the text of the lesson, formatted as a simple speech script without markdown characters (like hashes, bold asterisks, list bullets, etc.) so that it can be synthesized seamlessly via text-to-speech.
 
 Also generate 3 flashcards and 3 quiz questions for the overall topic.
 
@@ -102,9 +100,8 @@ Respond ONLY in valid JSON matching this schema:
       "id": "lesson-1",
       "title": "Lesson 1: [Title]",
       "summary": "[One sentence summary of this segment]",
-      "content": "[Main content text with 2-3 short paragraphs]",
-      "imagePrompt": "[Detailed prompt for image generation]",
-      "audioScript": "[Text to be spoken, no markdown markdown or punctuation markers]"
+      "content": "[Main content text with 2-3 short paragraphs, clean plain text]",
+      "imagePrompt": "[Detailed prompt for image generation]"
     }
   ],
   "flashcards": [
@@ -186,7 +183,7 @@ Respond ONLY in valid JSON matching this schema:
            <div className="mb-12 text-center max-w-2xl mx-auto">
              <h2 className="text-4xl font-serif tracking-tight mb-4 italic text-white">Master any topic, step-by-step.</h2>
              <p className="text-sm text-white/50 leading-relaxed">
-               Enter what you want to learn. We will segment the course into bite-sized lessons, read them word-by-word with audio, explain them with visuals, and guide you Socratic-style.
+               Enter what you want to learn. We will segment the course into bite-sized lessons, read them word-by-word with audio, explain them with visuals, and guide you Socratic-style with Sophia, your virtual guide.
              </p>
            </div>
         )}
@@ -347,7 +344,7 @@ function LessonAudioReader({ lesson, apiKey }: { lesson: Lesson; apiKey: string 
         },
         body: JSON.stringify({
           model: "qwen-tts",
-          input: lesson.audioScript,
+          input: lesson.content,
           voice: "alloy"
         })
       });
@@ -556,7 +553,7 @@ function SocraticTutorChat({ lesson, apiKey }: { lesson: Lesson; apiKey: string 
     setMessages([
       {
         role: "assistant",
-        content: `Hello! I am your AI Socratic Tutor. Let's discuss "${lesson.title}". What questions do you have about the concepts here, or would you like me to test your understanding?`
+        content: `Hello! I am Sophia, your Socratic Guide. Let's discuss "${lesson.title}". What questions do you have about the concepts here, or would you like me to test your understanding?`
       }
     ]);
     setError("");
@@ -578,7 +575,7 @@ function SocraticTutorChat({ lesson, apiKey }: { lesson: Lesson; apiKey: string 
     try {
       const systemMessage = {
         role: "system" as const,
-        content: `You are an upbeat, encouraging, and empathetic Socratic Tutor helper for the lesson: "${lesson.title}".
+        content: `You are Sophia, an upbeat, encouraging, and empathetic Socratic Guide helper for the lesson: "${lesson.title}".
 The content of the lesson is: "${lesson.content}".
 Your role is to help the student learn and master the concept by checking for understanding and providing guidance using Socratic questioning.
 Do not provide immediate answers or solutions to problems. Instead, help the student generate their own answers by asking leading questions, providing small hints, or offering simple everyday analogies.
@@ -630,7 +627,7 @@ Keep responses concise (under 100 words).`
       <div className="bg-[#0F0F11] border-b border-white/5 px-4 py-3 flex items-center gap-2">
         <div className="h-2 w-2 rounded-full bg-[#C1A57B] animate-pulse"></div>
         <h4 className="text-xs font-semibold uppercase tracking-widest text-[#C1A57B] flex items-center gap-1.5">
-          <Sparkles className="w-3.5 h-3.5" /> Socratic AI Tutor
+          <Sparkles className="w-3.5 h-3.5" /> Sophia (AI Guide)
         </h4>
       </div>
 
