@@ -729,9 +729,9 @@ function LessonsView({
     }));
   };
 
-  const activeGPTImage = `https://image.pollinations.ai/prompt/${encodeURIComponent(
+  const activeGPTImagelarge = `https://image.pollinations.ai/prompt/${encodeURIComponent(
     currentLesson.imagePrompt
-  )}?model=gptimage&width=800&height=480&nologo=true&seed=42`;
+  )}?model=gptimage-large&width=800&height=480&nologo=true&seed=42`;
 
   const completedCount = Object.values(completedLessons).filter(Boolean).length;
   const progressPercent = Math.round((completedCount / lessons.length) * 100);
