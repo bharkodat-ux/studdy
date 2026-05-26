@@ -538,6 +538,13 @@ function LessonAudioReader({ lesson, apiKey }: { lesson: Lesson; apiKey: string 
   );
 }
 
+function formatTime(secs: number) {
+  if (isNaN(secs)) return "0:00";
+  const m = Math.floor(secs / 60);
+  const s = Math.floor(secs % 60);
+  return `${m}:${s < 10 ? "0" : ""}${s}`;
+}
+
 function SocraticTutorChat({ lesson, apiKey }: { lesson: Lesson; apiKey: string }) {
   const [messages, setMessages] = useState<{ role: "user" | "assistant" | "system"; content: string }[]>([]);
   const [input, setInput] = useState("");
